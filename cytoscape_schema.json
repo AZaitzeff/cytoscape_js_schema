@@ -1,0 +1,709 @@
+{
+    "$schema": "http://json-schema.org/draft/2019-09/schema#",
+    "title": "Cytoscape Schema",
+    "description": "Dictionary that follows https://js.cytoscape.org/",
+    "type": "object",
+    "properties": {
+        "elements": {
+            "type": "array",
+            "description": "An array of elements specified as plain objects. For convenience, this option can alternatively be specified as a promise that resolves to the elements JSON.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "group": {
+                        "type": "string",
+                        "description": "nodes' for a node, 'edges' for an edge. NB the group field can be automatically inferred for you but specifying it gives you nice debug messages if you mis-init elements",
+                        "enum": [
+                            "nodes",
+                            "edges"
+                        ]
+                    },
+                    "data": {
+                        "type": "object",
+                        "required": [
+                            "id"
+                        ],
+                        "description": "element data",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "description": "mandatory (string) id for each element, assigned automatically on undefined"
+                            },
+                            "parent": {
+                                "type": "string",
+                                "description": "indicates the compound node parent id; not defined => no parent"
+                            }
+                        }
+                    },
+                    "position": {
+                        "type": "object",
+                        "description": "the model position of the node",
+                        "properties": {
+                            "x": {
+                                "type": "number"
+                            },
+                            "y": {
+                                "type": "number"
+                            }
+                        }
+                    },
+                    "renderedPosition": {
+                        "type": "object",
+                        "description": "can alternatively specify position in rendered on-screen pixels",
+                        "properties": {
+                            "x": {
+                                "type": "number"
+                            },
+                            "y": {
+                                "type": "number"
+                            }
+                        }
+                    },
+                    "selected": {
+                        "type": "boolean",
+                        "description": "",
+                        "default": false
+                    },
+                    "selectable": {
+                        "type": "boolean",
+                        "description": "whether the selection state is mutable",
+                        "default": true
+                    },
+                    "locked": {
+                        "type": "boolean",
+                        "description": "when locked a node's position is immutable",
+                        "default": false
+                    },
+                    "grabbable": {
+                        "type": "boolean",
+                        "description": "whether the node can be grabbed and moved by the user",
+                        "default": true
+                    },
+                    "pannable": {
+                        "type": "boolean",
+                        "description": "whether dragging the node causes panning instead of grabbing",
+                        "default": false
+                    },
+                    "classes": {
+                        "type": "array",
+                        "description": "an array of class names that the element has",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "layout": {
+            "type": "object",
+            "description": "Placement of the nodes see https://js.cytoscape.org/#layouts",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "default": "random",
+                    "enum": [
+                        "null",
+                        "random",
+                        "preset",
+                        "grid",
+                        "circle",
+                        "concentric",
+                        "breadthfirst",
+                        "cose"
+                    ],
+                    "description": "Type of layout"
+                },
+                "fit": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "whether to fit to viewport"
+                },
+                "padding": {
+                    "type": "number",
+                    "default": 30,
+                    "description": "fit padding"
+                },
+                "boundingBox": {
+                    "type": "object",
+                    "description": "constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }"
+                },
+                "animate": {
+                    "type": "boolean",
+                    "description": "whether to transition the node positions"
+                },
+                "animationDuration": {
+                    "type": "number",
+                    "description": "duration of animation in ms if enabled",
+                    "default": 500
+                },
+                "positions": {
+                    "type": "object",
+                    "description": "layout = preset, map of (node id) => (position obj); or function(node){ return somPos; }"
+                },
+                "avoidOverlap": {
+                    "type": "boolean",
+                    "description": "When layout is grid, circle, concentric, breathfirst. prevents node overlap, may overflow boundingBox if not enough space",
+                    "default": true
+                },
+                "avoidOverlapPadding": {
+                    "type": "number",
+                    "description": "When layout is grid. Extra spacing around nodes when avoidOverlap: true",
+                    "default": 10
+                },
+                "nodeDimensionsIncludeLabels": {
+                    "type": "boolean",
+                    "description": "Excludes the label when calculating node bounding boxes for the layout algorithm",
+                    "default": false
+                },
+                "spacingFactor": {
+                    "type": "number",
+                    "description": "When layout is grid, circle, breadthfirst. grid, circle: Applies a multiplicative factor (>0) to expand or compress the overall area that the nodes take up.breathfirst: positive spacing factor, larger => more space between nodes (N.B. n/a if causes overlap)",
+                    "default": 1,
+                    "minimum": 0
+                },
+                "condense": {
+                    "type": "boolean",
+                    "description": "When layout is grid. uses all available space on false, uses minimal space on true",
+                    "default": false
+                },
+                "rows": {
+                    "type": "integer",
+                    "description": "When layout is grid. force num of rows in the grid"
+                },
+                "cols": {
+                    "type": "integer",
+                    "description": "When layout is grid. force num of columns in the grid"
+                },
+                "radius": {
+                    "type": "number",
+                    "description": "When layout is circle. the radius of the circle"
+                },
+                "startAngle": {
+                    "type": "number",
+                    "description": "When layout is circle, concentric. where nodes start in radians",
+                    "default": 4.712
+                },
+                "sweep": {
+                    "type": "number",
+                    "description": "When layout is circle, concentric. how many radians should be between the first and last node (defaults to full circle)"
+                },
+                "clockwise": {
+                    "type": "boolean",
+                    "description": "When layout is circle, concentric. whether the layout should go clockwise (true) or counterclockwise/anticlockwise (false)"
+                },
+                "equidistant": {
+                    "type": "boolean",
+                    "description": "When layout is concentric. whether levels have an equal radial distance betwen them, may cause bounding box overflow"
+                },
+                "minNodeSpacing": {
+                    "type": "number",
+                    "description": "When layout is concentric. min spacing between outside of nodes (used for radius adjustment)"
+                },
+                "directed": {
+                    "type": "boolean",
+                    "description": "When layout is breadthfirst. whether the tree is directed downwards (or edges can point in any direction if false)",
+                    "default": false
+                },
+                "circle": {
+                    "type": "boolean",
+                    "description": "When layout is breadthfirst. put depths in concentric circles if true, put depths top down if false",
+                    "default": false
+                },
+                "grid": {
+                    "type": "boolean",
+                    "description": "When layout is breadthfirst. whether to create an even grid into which the DAG is placed (circle:false only)",
+                    "default": false
+                },
+                "roots": {
+                    "type": "string",
+                    "description": "When layout is breadthfirst. Format of selector, the roots of the trees"
+                },
+                "maximal": {
+                    "type": "boolean",
+                    "description": "When layout is breadthfirst. whether to shift nodes down their natural BFS depths in order to avoid upwards edges (DAGS only)",
+                    "default": false
+                },
+                "randomize": {
+                    "type": "boolean",
+                    "description": "When layout is cose. Randomize the initial positions of the nodes (true) or use existing positions (false)",
+                    "default": false
+                },
+                "componentSpacing": {
+                    "type": "number",
+                    "description": "When layout is cose. Extra spacing between components in non-compound graphs",
+                    "default": 40
+                },
+                "nodeOverlap": {
+                    "type": "number",
+                    "description": "When layout is cose. Node repulsion (overlapping) multiplier",
+                    "default": 4
+                },
+                "nestingFactor": {
+                    "type": "number",
+                    "description": "When layout is cose. Nesting factor (multiplier) to compute ideal edge length for nested edges",
+                    "default": 1.2
+                },
+                "gravity": {
+                    "type": "number",
+                    "description": "When layout is cose. Gravity force (constant)",
+                    "default": 1
+                },
+                "numIter": {
+                    "type": "number",
+                    "description": "When layout is cose. Maximum number of iterations to perform",
+                    "default": 1000
+                },
+                "initialTemp": {
+                    "type": "number",
+                    "description": "When layout is cose. Initial temperature (maximum node displacement)",
+                    "default": 1000
+                },
+                "coolingFactor": {
+                    "type": "number",
+                    "description": "When layout is cose. Cooling factor (how the temperature is reduced between consecutive iterations)",
+                    "default": 0.99
+                },
+                "minTemp": {
+                    "type": "number",
+                    "description": "When layout is cose. Lower temperature threshold (below this point the layout will end)",
+                    "default": 1.0
+                }
+            }
+        },
+        "style": {
+            "type": "array",
+            "description": "Style applied to a group, e.g. all nodes, all edges, nodes in a certain class or a single node, etc. Each element is CSS-like, See https://js.cytoscape.org/#style",
+            "items": {
+                "type": "object",
+                "required": [
+                    "selector",
+                    "style"
+                ],
+                "properties": {
+                    "selector": {
+                        "type": "string",
+                        "description": "Where to apply the style element, common inputs are *node* or *edge*, Also takes in css selector, e.g. *.foo* to apply to all edges and nodes of class *foo*, #foo (or [id=\"foo\"]) for node or edge of with id foo. See https://js.cytoscape.org/#selectors/notes-amp-caveats"
+                    },
+                    "style": {
+                        "type": "object",
+                        "description": "Specify the styles",
+                        "properties": {
+                            "width": {
+                                "type": "number",
+                                "description": "The width of the node\u2019s body or the width of an edge\u2019s line."
+                            },
+                            "height": {
+                                "type": "number",
+                                "description": "The height of the node\u2019s body"
+                            },
+                            "shape": {
+                                "type": "string",
+                                "description": "The shape of the node\u2019s body. Note that each shape fits within the specified width and height, and so you may have to adjust width and height if you desire an equilateral shape (i.e. width !== height for several equilateral shapes)",
+                                "enum": [
+                                    "ellipse",
+                                    "triangle",
+                                    "round-triangle",
+                                    "rectangle",
+                                    "round-rectangle",
+                                    "bottom-round-rectangle",
+                                    "cut-rectangle",
+                                    "barrel",
+                                    "rhomboid",
+                                    "diamond",
+                                    "round-diamond",
+                                    "pentagon",
+                                    "round-pentagon",
+                                    "hexagon",
+                                    "round-hexagon",
+                                    "concave-hexagon",
+                                    "heptagon",
+                                    "round-heptagon",
+                                    "octagon",
+                                    "round-octagon",
+                                    "star",
+                                    "tag",
+                                    "round-tag",
+                                    "vee"
+                                ]
+                            },
+                            "background-color": {
+                                "type": "string",
+                                "description": "The colour of the node\u2019s body. Colours may be specified by name (e.g. red), hex (e.g. #ff0000 or #f00), RGB (e.g. rgb(255, 0, 0)), or HSL (e.g. hsl(0, 100%, 50%))."
+                            },
+                            "background-blacken": {
+                                "type": "number",
+                                "description": "Blackens the node\u2019s body for values from 0 to 1; whitens the node\u2019s body for values from 0 to -1.",
+                                "maximum": 1,
+                                "minimum": -1
+                            },
+                            "background-opacity": {
+                                "type": "number",
+                                "description": "The opacity level of the node\u2019s background colour",
+                                "maximum": 1,
+                                "minimum": 0
+                            },
+                            "border-width": {
+                                "type": "number",
+                                "description": "The size of the node\u2019s border.",
+                                "minimum": 0
+                            },
+                            "border-style": {
+                                "type": "string",
+                                "description": "The style of the node\u2019s border",
+                                "enum": [
+                                    "solid",
+                                    "dotted",
+                                    "dashed",
+                                    "double"
+                                ]
+                            },
+                            "border-color": {
+                                "type": "string",
+                                "description": "The colour of the node\u2019s border. Colours may be specified by name (e.g. red), hex (e.g. #ff0000 or #f00), RGB (e.g. rgb(255, 0, 0)), or HSL (e.g. hsl(0, 100%, 50%))."
+                            },
+                            "border-opacity": {
+                                "type": "number",
+                                "description": "The opacity of the node\u2019s border",
+                                "minimum": 0,
+                                "maximum": 1
+                            },
+                            "padding": {
+                                "type": "number",
+                                "description": "The amount of padding around all sides of the node.",
+                                "minimum": 0
+                            },
+                            "curve-style": {
+                                "type": "string",
+                                "description": "The curving method used to separate two or more edges between two nodes; may be haystack (very fast, bundled straight edges for which loops and compounds are unsupported), straight (straight edges with all arrows supported), bezier (bundled curved edges), unbundled-bezier (curved edges for use with manual control points), segments (a series of straight lines), taxi (right-angled lines, hierarchically bundled). Note that haystack edges work best with ellipse, rectangle, or similar nodes. Smaller node shapes, like triangle, will not be as aesthetically pleasing. Also note that edge endpoint arrows are unsupported for haystack edges.",
+                                "default": "straight",
+                                "enum": [
+                                    "straight",
+                                    "haystack",
+                                    "bezier",
+                                    "unbundled-bezier",
+                                    "segments",
+                                    "taxi"
+                                ]
+                            },
+                            "line-color": {
+                                "type": "string",
+                                "description": "The colour of the edge\u2019s line. Colours may be specified by name (e.g. red), hex (e.g. #ff0000 or #f00), RGB (e.g. rgb(255, 0, 0)), or HSL (e.g. hsl(0, 100%, 50%))."
+                            },
+                            "line-style": {
+                                "type": "string",
+                                "description": "The style of the edge\u2019s line.",
+                                "enum": [
+                                    "solid",
+                                    "dotted",
+                                    "dashed"
+                                ]
+                            },
+                            "line-cap": {
+                                "type": "string",
+                                "description": "The cap style of the edge\u2019s line; may be butt (default), round, or square. The cap may or may not be visible, depending on the shape of the node and the relative size of the node and edge. Caps other than butt extend beyond the specified endpoint of the edge.",
+                                "enum": [
+                                    "butt",
+                                    "round",
+                                    "square"
+                                ],
+                                "default": "butt"
+                            },
+                            "line-opacity": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 1,
+                                "default": 1,
+                                "description": "The opacity of the edge\u2019s line and arrow. Useful if you wish to have a separate opacity for the edge label versus the edge line. Note that the opacity value of the edge element affects the effective opacity of its line and label subcomponents."
+                            },
+                            "target-arrow-color": {
+                                "type": "string",
+                                "description": "The colour of the edge\u2019s source arrow. Colours may be specified by name (e.g. red), hex (e.g. #ff0000 or #f00), RGB (e.g. rgb(255, 0, 0)), or HSL (e.g. hsl(0, 100%, 50%))."
+                            },
+                            "target-arrow-shape": {
+                                "type": "string",
+                                "description": "The shape of the edge\u2019s source arrow",
+                                "enum": [
+                                    "triangle",
+                                    "triangle-tee",
+                                    "circle-triangle",
+                                    "triangle-cross",
+                                    "triangle-backcurve",
+                                    "vee",
+                                    "tee",
+                                    "square",
+                                    "circle",
+                                    "diamond",
+                                    "chevron",
+                                    "none"
+                                ]
+                            },
+                            "target-arrow-fill": {
+                                "type": "string",
+                                "description": "The fill state of the edge\u2019s source arrow",
+                                "enum": [
+                                    "filled",
+                                    "hollow"
+                                ]
+                            },
+                            "mid-target-arrow-color": {
+                                "type": "string",
+                                "description": "The colour of the edge\u2019s source arrow. Colours may be specified by name (e.g. red), hex (e.g. #ff0000 or #f00), RGB (e.g. rgb(255, 0, 0)), or HSL (e.g. hsl(0, 100%, 50%))."
+                            },
+                            "mid-target-arrow-shape": {
+                                "type": "string",
+                                "description": "The shape of the edge\u2019s source arrow",
+                                "enum": [
+                                    "triangle",
+                                    "triangle-tee",
+                                    "circle-triangle",
+                                    "triangle-cross",
+                                    "triangle-backcurve",
+                                    "vee",
+                                    "tee",
+                                    "square",
+                                    "circle",
+                                    "diamond",
+                                    "chevron",
+                                    "none"
+                                ]
+                            },
+                            "mid-target-arrow-fill": {
+                                "type": "string",
+                                "description": "The fill state of the edge\u2019s source arrow",
+                                "enum": [
+                                    "filled",
+                                    "hollow"
+                                ]
+                            },
+                            "arrow-scale": {
+                                "type": "number",
+                                "description": "Scaling for the arrow size.",
+                                "minimum": 0
+                            },
+                            "opacity": {
+                                "type": "number",
+                                "description": "The opacity of the element. See https://js.cytoscape.org/#style/visibility",
+                                "minimum": 0,
+                                "maximum": 1
+                            },
+                            "z-index": {
+                                "type": "integer",
+                                "description": "An integer value that affects the relative draw order of elements. In general, an element with a higher z-index will be drawn on top of an element with a lower z-index. Note that edges are under nodes despite z-index."
+                            },
+                            "label": {
+                                "type": "string",
+                                "description": "The text to display for an element\u2019s label. Can give a path, e.g. data(id) will label with the elements id"
+                            },
+                            "source-label": {
+                                "type": "string",
+                                "description": "The text to display for an edge\u2019s source label. Can give a path, e.g. data(id) will label with the elements id"
+                            },
+                            "target-label": {
+                                "type": "string",
+                                "description": "The text to display for an edge\u2019s target label. Can give a path, e.g. data(id) will label with the elements id"
+                            },
+                            "color": {
+                                "type": "string",
+                                "description": "The color of the element's label. Colours may be specified by name (e.g. red), hex (e.g. #ff0000 or #f00), RGB (e.g. rgb(255, 0, 0)), or HSL (e.g. hsl(0, 100%, 50%))."
+                            },
+                            "text-opacity": {
+                                "type": "number",
+                                "description": "The opacity of the label text, including its outline.",
+                                "minimum": 0,
+                                "maximum": 1
+                            },
+                            "font-family": {
+                                "type": "string",
+                                "description": "A comma-separated list of font names to use on the label text."
+                            },
+                            "font-size": {
+                                "type": "string",
+                                "description": "The size of the label text."
+                            },
+                            "font-style": {
+                                "type": "string",
+                                "description": "A CSS font style to be applied to the label text."
+                            },
+                            "font-weight": {
+                                "type": "string",
+                                "description": "A CSS font weight to be applied to the label text."
+                            },
+                            "text-transform": {
+                                "type": "string",
+                                "description": "A transformation to apply to the label text",
+                                "enum": [
+                                    "none",
+                                    "uppercase",
+                                    "lowercase"
+                                ]
+                            },
+                            "text-halign": {
+                                "type": "string",
+                                "description": "The horizontal alignment of a node\u2019s label",
+                                "enum": [
+                                    "left",
+                                    "center",
+                                    "right"
+                                ]
+                            },
+                            "text-valign": {
+                                "type": "string",
+                                "description": "The vertical alignment of a node\u2019s label",
+                                "enum": [
+                                    "top",
+                                    "center",
+                                    "bottom"
+                                ]
+                            },
+                            "ghost": {
+                                "type": "string",
+                                "description": "Whether to use the ghost effect, a semitransparent duplicate of the element drawn at an offset.",
+                                "default": "no",
+                                "enum": [
+                                    "yes",
+                                    "no"
+                                ]
+                            },
+                            "active-bg-color": {
+                                "type": "string",
+                                "description": "The colour of the indicator shown when the background is grabbed by the user. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. #ff0000 or #f00), RGB (e.g. rgb(255, 0, 0)), or HSL (e.g. hsl(0, 100%, 50%))."
+                            },
+                            "active-bg-opacity": {
+                                "type": "string",
+                                "description": " The opacity of the active background indicator. Selector needs to be *core*."
+                            },
+                            "active-bg-size": {
+                                "type": "string",
+                                "description": " The opacity of the active background indicator. Selector needs to be *core*."
+                            },
+                            "selection-box-color": {
+                                "type": "string",
+                                "description": "The background colour of the selection box used for drag selection. Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. #ff0000 or #f00), RGB (e.g. rgb(255, 0, 0)), or HSL (e.g. hsl(0, 100%, 50%))."
+                            },
+                            "selection-box-border-width": {
+                                "type": "number",
+                                "description": "The size of the border on the selection box. Selector needs to be *core*"
+                            },
+                            "selection-box-opacity": {
+                                "type": "number",
+                                "description": "The opacity of the selection box.  Selector needs to be *core*",
+                                "minimum": 0,
+                                "maximum": 1
+                            },
+                            "outside-texture-bg-color": {
+                                "type": "string",
+                                "description": "The colour of the area outside the viewport texture when initOptions.textureOnViewport === true.  Selector needs to be *core*. Colours may be specified by name (e.g. red), hex (e.g. #ff0000 or #f00), RGB (e.g. rgb(255, 0, 0)), or HSL (e.g. hsl(0, 100%, 50%))."
+                            },
+                            "outside-texture-bg-opacity": {
+                                "type": "number",
+                                "description": "The opacity of the area outside the viewport texture. Selector needs to be *core*",
+                                "minimum": 0,
+                                "maximum": 1
+                            }
+                        }
+                    },
+                    "zoom": {
+                        "type": "number",
+                        "description": "The initial zoom level of the graph. Make sure to disable viewport manipulation options, such as fit, in your layout so that it is not overridden when the layout is applied. You can set options.minZoom and options.maxZoom to set restrictions on the zoom level",
+                        "default": "1"
+                    },
+                    "pan": {
+                        "type": "object",
+                        "description": "The initial panning position of the graph. Make sure to disable viewport manipulation options, such as fit, in your layout so that it is not overridden when the layout is applied.",
+                        "properties": {
+                            "x": {
+                                "type": "number",
+                                "default": 0
+                            },
+                            "y": {
+                                "type": "number",
+                                "default": 0
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "minZoom": {
+                        "type": "number",
+                        "description": "A minimum bound on the zoom level of the graph. The viewport cannot be scaled smaller than this zoom level."
+                    },
+                    "maxZoom": {
+                        "type": "number",
+                        "description": "A maximum bound on the zoom level of the graph. The viewport cannot be scaled larger than this zoom level."
+                    },
+                    "zoomingEnabled": {
+                        "type": "boolean",
+                        "description": "Whether zooming the graph is enabled, both by user events and programmatically."
+                    },
+                    "userZoomingEnabled": {
+                        "type": "boolean",
+                        "description": "Whether user events (e.g. mouse wheel, pinch-to-zoom) are allowed to zoom the graph. Programmatic changes to zoom are unaffected by this option."
+                    },
+                    "panningEnabled": {
+                        "type": "boolean",
+                        "description": "Whether panning the graph is enabled, both by user events and programmatically."
+                    },
+                    "userPanningEnabled": {
+                        "type": "boolean",
+                        "description": "Whether user events (e.g. dragging the graph background) are allowed to pan the graph. Programmatic changes to pan are unaffected by this option."
+                    },
+                    "boxSelectionEnabled": {
+                        "type": "boolean",
+                        "description": "Whether box selection (i.e. drag a box overlay around, and release it to select) is enabled. If enabled while panning is also enabled, the user must use a modifier key (shift, alt, control, or command) to use box selection."
+                    },
+                    "selectionType": {
+                        "type": "string",
+                        "description": "A string indicating the selection behaviour from user input. For 'additive', a new selection made by the user adds to the set of currently selected elements. For 'single', a new selection made by the user becomes the entire set of currently selected elements (i.e. the previous elements are unselected).",
+                        "enum": [
+                            "single",
+                            "additive"
+                        ],
+                        "default": "single"
+                    },
+                    "touchTapThreshold": {
+                        "type": "number",
+                        "description": "A non-negative integer that indicates the maximum allowable distance that a user may move during a tap gesture on touch devices. This makes tapping easier for users. These values have sane defaults, so it is not advised to change these options unless you have very good reason for doing so. Large values will almost certainly have undesirable consequences.",
+                        "default": 8
+                    },
+                    "desktopTapThreshold": {
+                        "type": "number",
+                        "description": "A non-negative integer that indicates the maximum allowable distance that a user may move during a tap gesture on desktop devices. This makes tapping easier for users. These values have sane defaults, so it is not advised to change these options unless you have very good reason for doing so. Large values will almost certainly have undesirable consequences.",
+                        "default": 4
+                    },
+                    "autoungrabify": {
+                        "type": "boolean",
+                        "description": "Whether nodes should be ungrabified (not grabbable by user) by default (if true, overrides individual node state)",
+                        "default": false
+                    },
+                    "autolock": {
+                        "type": "boolean",
+                        "description": "Whether nodes should be locked (not draggable at all) by default (if true, overrides individual node state).",
+                        "default": false
+                    },
+                    "autounselectify": {
+                        "type": "boolean",
+                        "description": "Whether nodes should be unselectified (immutable selection state) by default (if true, overrides individual element state).",
+                        "default": false
+                    },
+                    "headless": {
+                        "type": "boolean",
+                        "description": "A convenience option that initialises the instance to run headlessly. You do not need to set this in environments that are implicitly headless (e.g. Node.js). However, it is handy to set headless: true if you want a headless instance in a browser.",
+                        "default": false
+                    },
+                    "styleEnabled": {
+                        "type": "boolean",
+                        "description": "A boolean that indicates whether styling should be used. For headless (i.e. outside the browser) environments, display is not necessary and so neither is styling necessary \u2014 thereby speeding up your code. You can manually enable styling in headless environments if you require it for a special case. Note that it does not make sense to disable style if you plan on rendering the graph. Also note that cy.destroy() must be called to clean up a style-enabled, headless instance.",
+                        "default": false
+                    },
+                    "wheelSensitivity": {
+                        "type": "number",
+                        "default": 1,
+                        "description": "Changes the scroll wheel sensitivity when zooming. This is a multiplicative modifier. So, a value between 0 and 1 reduces the sensitivity (zooms slower), and a value greater than 1 increases the sensitivity (zooms faster). This option is set to a sane value that works well for mainstream mice (Apple, Logitech, Microsoft) on Linux, Mac, and Windows. If the default value seems too fast or too slow on your particular system, you may have non-default mouse settings in your OS or a niche mouse. You should not change this value unless your app is meant to work only on specific hardware. Otherwise, you risk making zooming too slow or too fast for most users."
+                    }
+                }
+            }
+        }
+    }
+}
