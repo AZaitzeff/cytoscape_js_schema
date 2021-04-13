@@ -1,4 +1,4 @@
-# cytoscape_js_schema
+# Cytoscape.js Schema
 This repository provides a schema for the [javascript implementation of Cytoscape](https://js.cytoscape.org/#core/initialisation).
 
 The schema follows the conventions of [JSON Schema](https://json-schema.org/).
