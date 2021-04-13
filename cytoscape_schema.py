@@ -94,6 +94,14 @@ def build_cytoscape_schema():
                                     TYPE: STRING,
                                     DESCRIPTION: "indicates the compound node parent id; not defined => no parent",
                                 },
+                                SOURCE: {
+                                    TYPE: STRING,
+                                    DESCRIPTION: "the source node id (edge comes from this node)",
+                                },
+                                TARGET: {
+                                    TYPE: STRING,
+                                    DESCRIPTION: "the target node id (edge goes to this node)",
+                                },
                             },
                         },
                         "position": {

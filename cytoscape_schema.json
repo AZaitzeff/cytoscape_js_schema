@@ -32,6 +32,14 @@
                             "parent": {
                                 "type": "string",
                                 "description": "indicates the compound node parent id; not defined => no parent"
+                            },
+                            "source": {
+                                "type": "string",
+                                "description": "the source node id (edge comes from this node)"
+                            },
+                            "target": {
+                                "type": "string",
+                                "description": "the target node id (edge goes to this node)"
                             }
                         }
                     },
