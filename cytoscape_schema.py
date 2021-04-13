@@ -656,141 +656,146 @@ def build_cytoscape_schema():
                                 },
                             },
                         },
-                        "zoom": {
-                            TYPE: NUMBER,
-                            DESCRIPTION: "The initial zoom level of the graph. Make sure to disable viewport"
-                            " manipulation options, such as fit, in your layout so that it is not overridden"
-                            " when the layout is applied. You can set options.minZoom and"
-                            " options.maxZoom to set restrictions on the zoom level",
-                            DEFAULT: "1",
-                        },
-                        "pan": {
-                            TYPE: OBJECT,
-                            DESCRIPTION: "The initial panning position of the graph. Make sure to disable viewport"
-                            " manipulation options, such as fit, in your layout so that it is not"
-                            " overridden when the layout is applied.",
-                            PROPERTIES: {
-                                "x": {TYPE: NUMBER, DEFAULT: 0},
-                                "y": {TYPE: NUMBER, DEFAULT: 0},
-                            },
-                            ADDITIONAL_PROPERTIES: False,
-                        },
-                        "minZoom": {
-                            TYPE: NUMBER,
-                            DESCRIPTION: "A minimum bound on the zoom level of the graph. The viewport cannot be"
-                            " scaled smaller than this zoom level.",
-                        },
-                        "maxZoom": {
-                            TYPE: NUMBER,
-                            DESCRIPTION: "A maximum bound on the zoom level of the graph. The viewport cannot"
-                            " be scaled larger than this zoom level.",
-                        },
-                        "zoomingEnabled": {
-                            TYPE: BOOLEAN,
-                            DESCRIPTION: "Whether zooming the graph is enabled, both by user events"
-                            " and programmatically.",
-                        },
-                        "userZoomingEnabled": {
-                            TYPE: BOOLEAN,
-                            DESCRIPTION: "Whether user events (e.g. mouse wheel, pinch-to-zoom) are allowed to zoom"
-                            " the graph. Programmatic changes to zoom are unaffected by this option.",
-                        },
-                        "panningEnabled": {
-                            TYPE: BOOLEAN,
-                            DESCRIPTION: "Whether panning the graph is enabled, both by user"
-                            " events and programmatically.",
-                        },
-                        "userPanningEnabled": {
-                            TYPE: BOOLEAN,
-                            DESCRIPTION: "Whether user events (e.g. dragging the graph background) are allowed"
-                            " to pan the graph. Programmatic changes to pan are unaffected by this option.",
-                        },
-                        "boxSelectionEnabled": {
-                            TYPE: BOOLEAN,
-                            DESCRIPTION: "Whether box selection (i.e. drag a box overlay around, and release it to"
-                            " select) is enabled. If enabled while panning is also enabled, the user must"
-                            " use a modifier key (shift, alt, control, or command) to use box selection.",
-                        },
-                        "selectionType": {
-                            TYPE: STRING,
-                            DESCRIPTION: "A string indicating the selection behaviour from user input. For 'additive',"
-                            " a new selection made by the user adds to the set of currently selected"
-                            " elements. For 'single', a new selection made by the user becomes the entire"
-                            " set of currently selected elements (i.e. the previous elements are"
-                            " unselected).",
-                            ENUM: ["single", "additive"],
-                            DEFAULT: "single",
-                        },
-                        "touchTapThreshold": {
-                            TYPE: NUMBER,
-                            DESCRIPTION: "A non-negative integer that indicates the maximum allowable distance that"
-                            " a user may move during a tap gesture on touch devices. This makes tapping"
-                            " easier for users. These values have sane defaults, so it is not advised to"
-                            " change these options unless you have very good reason for doing so."
-                            " Large values will almost certainly have undesirable consequences.",
-                            DEFAULT: 8,
-                        },
-                        "desktopTapThreshold": {
-                            TYPE: NUMBER,
-                            DESCRIPTION: "A non-negative integer that indicates the maximum allowable distance that"
-                            " a user may move during a tap gesture on desktop devices. This makes tapping"
-                            " easier for users. These values have sane defaults, so it is not advised to"
-                            " change these options unless you have very good reason for doing so."
-                            " Large values will almost certainly have undesirable consequences.",
-                            DEFAULT: 4,
-                        },
-                        "autoungrabify": {
-                            TYPE: BOOLEAN,
-                            DESCRIPTION: "Whether nodes should be ungrabified (not grabbable by user) by default"
-                            " (if true, overrides individual node state)",
-                            DEFAULT: False,
-                        },
-                        "autolock": {
-                            TYPE: BOOLEAN,
-                            DESCRIPTION: "Whether nodes should be locked (not draggable at all) by default (if true,"
-                            " overrides individual node state).",
-                            DEFAULT: False,
-                        },
-                        "autounselectify": {
-                            TYPE: BOOLEAN,
-                            DESCRIPTION: "Whether nodes should be unselectified (immutable selection state) by default"
-                            " (if true, overrides individual element state).",
-                            DEFAULT: False,
-                        },
-                        "headless": {
-                            TYPE: BOOLEAN,
-                            DESCRIPTION: "A convenience option that initialises the instance to run headlessly."
-                            " You do not need to set this in environments that are implicitly headless"
-                            " (e.g. Node.js). However, it is handy to set headless: true if you want a"
-                            " headless instance in a browser.",
-                            DEFAULT: False,
-                        },
-                        "styleEnabled": {
-                            TYPE: BOOLEAN,
-                            DESCRIPTION: "A boolean that indicates whether styling should be used. For headless "
-                            "(i.e. outside the browser) environments, display is not necessary and so"
-                            " neither is styling necessary — thereby speeding up your code. You can"
-                            " manually enable styling in headless environments if you require it for a"
-                            " special case. Note that it does not make sense to disable style if you plan"
-                            " on rendering the graph. Also note that cy.destroy() must be called to clean"
-                            " up a style-enabled, headless instance.",
-                            DEFAULT: False,
-                        },
-                        "wheelSensitivity": {
-                            TYPE: NUMBER,
-                            DEFAULT: 1,
-                            DESCRIPTION: "Changes the scroll wheel sensitivity when zooming. This is a multiplicative"
-                            " modifier. So, a value between 0 and 1 reduces the sensitivity (zooms slower),"
-                            " and a value greater than 1 increases the sensitivity (zooms faster). This"
-                            " option is set to a sane value that works well for mainstream mice (Apple,"
-                            " Logitech, Microsoft) on Linux, Mac, and Windows. If the default value seems"
-                            " too fast or too slow on your particular system, you may have non-default"
-                            " mouse settings in your OS or a niche mouse. You should not change this value"
-                            " unless your app is meant to work only on specific hardware. Otherwise, you"
-                            " risk making zooming too slow or too fast for most users.",
-                        },
                     },
                 },
+            },
+            "zoom": {
+                TYPE: NUMBER,
+                DESCRIPTION: "The initial zoom level of the graph. Make sure to disable viewport"
+                " manipulation options, such as fit, in your layout so that it is not overridden"
+                " when the layout is applied. You can set options.minZoom and"
+                " options.maxZoom to set restrictions on the zoom level",
+                DEFAULT: "1",
+            },
+            "pan": {
+                TYPE: OBJECT,
+                DESCRIPTION: "The initial panning position of the graph. Make sure to disable viewport"
+                " manipulation options, such as fit, in your layout so that it is not"
+                " overridden when the layout is applied.",
+                PROPERTIES: {
+                    "x": {TYPE: NUMBER, DEFAULT: 0},
+                    "y": {TYPE: NUMBER, DEFAULT: 0},
+                },
+                ADDITIONAL_PROPERTIES: False,
+            },
+            "minZoom": {
+                TYPE: NUMBER,
+                DESCRIPTION: "A minimum bound on the zoom level of the graph. The viewport cannot be"
+                " scaled smaller than this zoom level.",
+            },
+            "maxZoom": {
+                TYPE: NUMBER,
+                DESCRIPTION: "A maximum bound on the zoom level of the graph. The viewport cannot"
+                " be scaled larger than this zoom level.",
+            },
+            "zoomingEnabled": {
+                TYPE: BOOLEAN,
+                DESCRIPTION: "Whether zooming the graph is enabled, both by user events"
+                " and programmatically.",
+                DEFAULT: True,
+            },
+            "userZoomingEnabled": {
+                TYPE: BOOLEAN,
+                DESCRIPTION: "Whether user events (e.g. mouse wheel, pinch-to-zoom) are allowed to zoom"
+                " the graph. Programmatic changes to zoom are unaffected by this option.",
+                DEFAULT: True,
+            },
+            "panningEnabled": {
+                TYPE: BOOLEAN,
+                DESCRIPTION: "Whether panning the graph is enabled, both by user"
+                " events and programmatically.",
+                DEFAULT: True,
+            },
+            "userPanningEnabled": {
+                TYPE: BOOLEAN,
+                DESCRIPTION: "Whether user events (e.g. dragging the graph background) are allowed"
+                " to pan the graph. Programmatic changes to pan are unaffected by this option.",
+                DEFAULT: True,
+            },
+            "boxSelectionEnabled": {
+                TYPE: BOOLEAN,
+                DESCRIPTION: "Whether box selection (i.e. drag a box overlay around, and release it to"
+                " select) is enabled. If enabled while panning is also enabled, the user must"
+                " use a modifier key (shift, alt, control, or command) to use box selection.",
+                DEFAULT: True,
+            },
+            "selectionType": {
+                TYPE: STRING,
+                DESCRIPTION: "A string indicating the selection behaviour from user input. For 'additive',"
+                " a new selection made by the user adds to the set of currently selected"
+                " elements. For 'single', a new selection made by the user becomes the entire"
+                " set of currently selected elements (i.e. the previous elements are"
+                " unselected).",
+                ENUM: ["single", "additive"],
+                DEFAULT: "single",
+            },
+            "touchTapThreshold": {
+                TYPE: NUMBER,
+                DESCRIPTION: "A non-negative integer that indicates the maximum allowable distance that"
+                " a user may move during a tap gesture on touch devices. This makes tapping"
+                " easier for users. These values have sane defaults, so it is not advised to"
+                " change these options unless you have very good reason for doing so."
+                " Large values will almost certainly have undesirable consequences.",
+                DEFAULT: 8,
+            },
+            "desktopTapThreshold": {
+                TYPE: NUMBER,
+                DESCRIPTION: "A non-negative integer that indicates the maximum allowable distance that"
+                " a user may move during a tap gesture on desktop devices. This makes tapping"
+                " easier for users. These values have sane defaults, so it is not advised to"
+                " change these options unless you have very good reason for doing so."
+                " Large values will almost certainly have undesirable consequences.",
+                DEFAULT: 4,
+            },
+            "autoungrabify": {
+                TYPE: BOOLEAN,
+                DESCRIPTION: "Whether nodes should be ungrabified (not grabbable by user) by default"
+                " (if true, overrides individual node state)",
+                DEFAULT: False,
+            },
+            "autolock": {
+                TYPE: BOOLEAN,
+                DESCRIPTION: "Whether nodes should be locked (not draggable at all) by default (if true,"
+                " overrides individual node state).",
+                DEFAULT: False,
+            },
+            "autounselectify": {
+                TYPE: BOOLEAN,
+                DESCRIPTION: "Whether nodes should be unselectified (immutable selection state) by default"
+                " (if true, overrides individual element state).",
+                DEFAULT: False,
+            },
+            "headless": {
+                TYPE: BOOLEAN,
+                DESCRIPTION: "A convenience option that initialises the instance to run headlessly."
+                " You do not need to set this in environments that are implicitly headless"
+                " (e.g. Node.js). However, it is handy to set headless: true if you want a"
+                " headless instance in a browser.",
+                DEFAULT: False,
+            },
+            "styleEnabled": {
+                TYPE: BOOLEAN,
+                DESCRIPTION: "A boolean that indicates whether styling should be used. For headless "
+                "(i.e. outside the browser) environments, display is not necessary and so"
+                " neither is styling necessary — thereby speeding up your code. You can"
+                " manually enable styling in headless environments if you require it for a"
+                " special case. Note that it does not make sense to disable style if you plan"
+                " on rendering the graph. Also note that cy.destroy() must be called to clean"
+                " up a style-enabled, headless instance.",
+                DEFAULT: False,
+            },
+            "wheelSensitivity": {
+                TYPE: NUMBER,
+                DEFAULT: 1,
+                DESCRIPTION: "Changes the scroll wheel sensitivity when zooming. This is a multiplicative"
+                " modifier. So, a value between 0 and 1 reduces the sensitivity (zooms slower),"
+                " and a value greater than 1 increases the sensitivity (zooms faster). This"
+                " option is set to a sane value that works well for mainstream mice (Apple,"
+                " Logitech, Microsoft) on Linux, Mac, and Windows. If the default value seems"
+                " too fast or too slow on your particular system, you may have non-default"
+                " mouse settings in your OS or a niche mouse. You should not change this value"
+                " unless your app is meant to work only on specific hardware. Otherwise, you"
+                " risk making zooming too slow or too fast for most users.",
             },
         },
     }
